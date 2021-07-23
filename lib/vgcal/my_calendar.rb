@@ -1,4 +1,5 @@
 require 'vgcal/google/authorizer'
+require 'dotenv'
 
 class MyCalendar
 
@@ -8,6 +9,7 @@ class MyCalendar
   end
 
   def show
+    Dotenv.load("#{Dir.home}/.vgcal/.env")
     events = calendar_events
     # 自身がオーナーになっているタスク一覧を表示
     tasks = my_tasks(events)
@@ -31,11 +33,11 @@ class MyCalendar
   private
 
   def my_email_address
-    "ito.shota@hamee.co.jp"
+    ENV['MY_EMAIL_ADDRESS']
   end
 
   def application_name
-    "Google Calendar API Ruby Quickstart"
+    ENV['MY_APPLICATION_NAME']
   end
 
   def hide_words
@@ -110,7 +112,7 @@ class MyCalendar
 
   def calendar_events
     service = Google::Apis::CalendarV3::CalendarService.new
-    service.client_options.application_name = application_name
+    # service.client_options.application_name = application_name
     service.authorization = Vgcal::Authorizer.new.credentials
     calendar_id = "primary"
     service.list_events(calendar_id,

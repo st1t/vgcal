@@ -10,9 +10,11 @@ module Vgcal
       def init
         vgcal_dir = "#{Dir.home}/.vgcal"
         cred_json = "#{vgcal_dir}/credentials.json"
+        dot_env = "#{vgcal_dir}/.env"
         Dir.mkdir("#{vgcal_dir}",0755) unless Dir.exist?("#{vgcal_dir}")
         FileUtils.cp('template-credentials.json',"#{cred_json}") unless File.exist?(cred_json)
-        puts "Fix the __FIX_ME__ in #{cred_json}"
+        FileUtils.cp('template.env',"#{dot_env}") unless File.exist?(dot_env)
+        puts "Fix the __FIX_ME__ in #{cred_json} and #{dot_env}"
       end
 
       option :date, type: :string, aliases: '-d', desc: 'Show relative date. ex.-1, +10'

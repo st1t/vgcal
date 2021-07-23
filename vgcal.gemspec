@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.10"
   spec.add_runtime_dependency "thor", "~> 1.1"
   spec.add_runtime_dependency "google-api-client"
+  spec.add_runtime_dependency "dotenv"
 end

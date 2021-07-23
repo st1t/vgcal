@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     vgcal (0.1.0)
+      dotenv
       google-api-client
       thor (~> 1.1)
 
@@ -19,6 +20,7 @@ GEM
     concurrent-ruby (1.1.9)
     declarative (0.0.20)
     diff-lcs (1.4.4)
+    dotenv (2.7.6)
     faraday (1.4.2)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
