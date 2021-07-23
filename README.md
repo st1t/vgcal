@@ -26,6 +26,26 @@ $
 ## Usage
 
 ```shell
+# help
+$ vgcal
+Commands:
+  vgcal help [COMMAND]  # Describe available commands or one specific command
+  vgcal init            # Make directory and template credentials.json for Google authentication
+  vgcal show            # Show google calendar
+  vgcal version         # View vgcal version
+$
+$ vgcal help show
+Usage:
+  vgcal show
+
+Options:
+  -d, [--date=DATE]                  # Show relative date. ex.-1, +10
+  -c, [--current-week=CURRENT-WEEK]  # Show current week tasks
+  -s, [--start-date=N]               # Start date. ex.20210701
+  -e, [--end-date=N]                 # End date. ex.20210728
+
+Show google calendar
+$
 # Today's schedule
 $ vgcal show
 
@@ -47,5 +67,6 @@ $ vgcal show -s 20210701 -e 20210728
 ```shell
 $ git clone git@github.com:st1t/vgcal.git
 $ cd vgcal/
+$ bundle install
 $ bundle exec ruby exe/vgcal show -d -5
 ```
