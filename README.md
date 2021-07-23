@@ -15,9 +15,10 @@ $ gem install vgcal
   - [Create credentials](https://developers.google.com/workspace/guides/create-credentials)
 
 ```shell
-$ git clone git@github.com:st1t/vgcal.git
-$ cd vgcal/
-$ vim credentials.json # Modify __FIX_ME__
+$ gem install vgcal
+$ bundle exec ruby exe/vgcal init
+Fix the __FIX_ME__ in /Users/ito.shota/.vgcal/credentials.json
+$
 ```
 
 

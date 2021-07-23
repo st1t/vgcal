@@ -7,8 +7,8 @@ module Vgcal
   class Authorizer
     def initialize
       @oob_uri = "urn:ietf:wg:oauth:2.0:oob".freeze
-      @credentials_path = "credentials.json".freeze
-      @token_path = "token.yaml".freeze
+      @credentials_path = "#{Dir.home}/.vgcal/credentials.json".freeze
+      @token_path = "#{Dir.home}/.vgcal/token.yaml".freeze
       @scope = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
     end
 

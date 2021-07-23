@@ -1,5 +1,6 @@
 require 'thor'
 require 'vgcal/my_calendar'
+require 'fileutils'
 
 module Vgcal
   module Handlers
@@ -9,7 +10,17 @@ module Vgcal
       option :'start-date', type: :string, aliases: '-s', desc: 'Start date'
       option :'end-date', type: :string, aliases: '-e', desc: 'End date'
 
-      desc 'show', 'show google calendar'
+      desc 'init', 'Make directory and template credentials.json for Google authentication'
+
+      def init
+        vgcal_dir = "#{Dir.home}/.vgcal"
+        cred_json = "#{vgcal_dir}/credentials.json"
+        Dir.mkdir("#{vgcal_dir}",0755) unless Dir.exist?("#{vgcal_dir}")
+        FileUtils.cp('template-credentials.json',"#{cred_json}") unless File.exist?(cred_json)
+        puts "Fix the __FIX_ME__ in #{cred_json}"
+      end
+
+      desc 'show', 'Show google calendar'
 
       def show
         puts "Period: #{start_date} - #{end_date}"
