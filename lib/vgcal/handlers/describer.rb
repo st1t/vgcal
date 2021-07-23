@@ -5,11 +5,6 @@ require 'fileutils'
 module Vgcal
   module Handlers
     class Describer < Thor
-      option :date, type: :string, aliases: '-d', desc: 'Show relative date. ex. -1,+10'
-      option :'current-week', type: :string, aliases: '-c', desc: 'Show current week tasks'
-      option :'start-date', type: :string, aliases: '-s', desc: 'Start date'
-      option :'end-date', type: :string, aliases: '-e', desc: 'End date'
-
       desc 'init', 'Make directory and template credentials.json for Google authentication'
 
       def init
@@ -19,6 +14,11 @@ module Vgcal
         FileUtils.cp('template-credentials.json',"#{cred_json}") unless File.exist?(cred_json)
         puts "Fix the __FIX_ME__ in #{cred_json}"
       end
+
+      option :date, type: :string, aliases: '-d', desc: 'Show relative date. ex.-1, +10'
+      option :'current-week', type: :string, aliases: '-c', desc: 'Show current week tasks'
+      option :'start-date', type: :numeric, aliases: '-s', desc: 'Start date. ex.20210701'
+      option :'end-date', type: :numeric, aliases: '-e', desc: 'End date. ex.20210728'
 
       desc 'show', 'Show google calendar'
 
