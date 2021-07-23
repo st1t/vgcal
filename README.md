@@ -13,14 +13,15 @@ $ gem install vgcal
 - Setup Google API
   - [Create a project and enable the API](https://developers.google.com/workspace/guides/create-project)
   - [Create credentials](https://developers.google.com/workspace/guides/create-credentials)
+    - [When creating an OAuth client ID, the application type will be a desktop application](https://developers.google.com/workspace/guides/create-credentials#desktop)
+  - [Enable Google Calendar API](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com)
 
 ```shell
 $ gem install vgcal
-$ bundle exec ruby exe/vgcal init
+$ vgcal init
 Fix the __FIX_ME__ in /Users/ito.shota/.vgcal/credentials.json
 $
 ```
-
 
 ## Usage
 
@@ -44,5 +45,7 @@ $ vgcal show -s 20210701 -e 20210728
 ## Development
 
 ```shell
+$ git clone git@github.com:st1t/vgcal.git
+$ cd vgcal/
 $ bundle exec ruby exe/vgcal show -d -5
 ```
