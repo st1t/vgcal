@@ -46,8 +46,25 @@ Options:
 
 Show google calendar
 $
+```
+
+### example
+
+![Today's schedule](./images/google-calendar.png)
+
+```shell
 # Today's schedule
 $ vgcal show
+Period: 2021-07-24T00:00:00+09:00 - 2021-07-24T23:59:59+09:00
+
+My tasks: 5.25h(0.66day)
+  ・all day task 1: all day
+  ・all day task2: all day
+  ・meeting1: 2.0h
+  ・meeting2: 0.25h
+  ・meeting3: 3.0h
+
+Invited meetings: 0h(0day)
 
 # This week's schedule (starting on Sunday)
 $ vgcal show -c
