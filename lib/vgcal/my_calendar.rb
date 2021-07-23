@@ -36,10 +36,6 @@ class MyCalendar
     ENV['MY_EMAIL_ADDRESS']
   end
 
-  def application_name
-    ENV['MY_APPLICATION_NAME']
-  end
-
   def hide_words
     ["__"]
   end
@@ -112,7 +108,6 @@ class MyCalendar
 
   def calendar_events
     service = Google::Apis::CalendarV3::CalendarService.new
-    # service.client_options.application_name = application_name
     service.authorization = Vgcal::Authorizer.new.credentials
     calendar_id = "primary"
     service.list_events(calendar_id,
