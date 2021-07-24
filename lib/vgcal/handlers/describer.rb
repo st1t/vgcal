@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'thor'
 require 'vgcal/my_calendar'
 require 'fileutils'
 
 module Vgcal
   module Handlers
+    # Describer
     class Describer < Thor
       desc 'init', 'Make directory and template credentials.json for Google authentication'
 
@@ -11,9 +14,9 @@ module Vgcal
         vgcal_dir = "#{Dir.home}/.vgcal"
         cred_json = "#{vgcal_dir}/credentials.json"
         dot_env = "#{vgcal_dir}/.env"
-        Dir.mkdir("#{vgcal_dir}",0755) unless Dir.exist?("#{vgcal_dir}")
-        FileUtils.cp('template-credentials.json',"#{cred_json}") unless File.exist?(cred_json)
-        FileUtils.cp('template.env',"#{dot_env}") unless File.exist?(dot_env)
+        Dir.mkdir(vgcal_dir, 0o755) unless Dir.exist?(vgcal_dir)
+        FileUtils.cp('template-credentials.json', cred_json) unless File.exist?(cred_json)
+        FileUtils.cp('template.env', dot_env) unless File.exist?(dot_env)
         puts "Fix the __FIX_ME__ in #{cred_json} and #{dot_env}"
       end
 
@@ -40,51 +43,51 @@ module Vgcal
       private
 
       def start_date
-        if options[:'current-week']
-          if Date.today.sunday?
-            s_date = Date.today.to_s
-          else
-            s_date = ((Date.today - Date.today.wday - 1).to_s).to_s
-          end
-        elsif options[:date]
-          case options[:date][0]
-          when '+'
-            s_date = (Date.today + options[:date].delete('+').to_i).to_s
-          when '-'
-            s_date = (Date.today - options[:date].delete('-').to_i).to_s
-          else
-            s_date = (Date.today + options[:date].to_i).to_s
-          end
-        elsif options['start-date'] && options['end-date']
-          s_date = Date.parse(options['start-date']).to_s
-        else
-          s_date = (Date.today.to_s).to_s
-        end
-        s_date + "T00:00:00+09:00"
+        s_date = if options[:'current-week']
+                   if Date.today.sunday?
+                     Date.today.to_s
+                   else
+                     (Date.today - Date.today.wday - 1).to_s
+                   end
+                 elsif options[:date]
+                   case options[:date][0]
+                   when '+'
+                     (Date.today + options[:date].delete('+').to_i).to_s
+                   when '-'
+                     (Date.today - options[:date].delete('-').to_i).to_s
+                   else
+                     (Date.today + options[:date].to_i).to_s
+                   end
+                 elsif options['start-date'] && options['end-date']
+                   Date.parse(options['start-date']).to_s
+                 else
+                   Date.today.to_s
+                 end
+        "#{s_date}T00:00:00+09:00"
       end
 
       def end_date
-        if options[:'current-week']
-          if Date.today.sunday?
-            e_date = Date.today.to_s + 6
-          else
-            e_date = ((Date.today + (6 - Date.today.wday)).to_s).to_s
-          end
-        elsif options[:date]
-          case options[:date][0]
-          when '+'
-            e_date = (Date.today + options[:date].delete('+').to_i).to_s
-          when '-'
-            e_date = (Date.today - options[:date].delete('-').to_i).to_s
-          else
-            e_date = (Date.today + options[:date].to_i).to_s
-          end
-        elsif options['start-date'] && options['end-date']
-          e_date = Date.parse(options['end-date']).to_s
-        else
-          e_date = (Date.today.to_s).to_s
-        end
-        e_date + "T23:59:59+09:00"
+        e_date = if options[:'current-week']
+                   if Date.today.sunday?
+                     Date.today.to_s + 6
+                   else
+                     (Date.today + (6 - Date.today.wday)).to_s
+                   end
+                 elsif options[:date]
+                   case options[:date][0]
+                   when '+'
+                     (Date.today + options[:date].delete('+').to_i).to_s
+                   when '-'
+                     (Date.today - options[:date].delete('-').to_i).to_s
+                   else
+                     (Date.today + options[:date].to_i).to_s
+                   end
+                 elsif options['start-date'] && options['end-date']
+                   Date.parse(options['end-date']).to_s
+                 else
+                   Date.today.to_s
+                 end
+        "#{e_date}T23:59:59+09:00"
       end
     end
   end

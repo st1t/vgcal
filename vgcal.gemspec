@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "vgcal/version"
@@ -25,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 2.2"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.10"
+  spec.add_development_dependency "rubocop"
   spec.add_runtime_dependency "thor", "~> 1.1"
   spec.add_runtime_dependency "google-api-client"
   spec.add_runtime_dependency "dotenv"

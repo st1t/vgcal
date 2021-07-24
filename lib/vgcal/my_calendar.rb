@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'vgcal/google/authorizer'
 require 'dotenv'
 
+# MyCalendar
 class MyCalendar
-
   def initialize(start_date, end_date)
     @start_date = start_date
     @end_date = end_date
@@ -15,7 +17,7 @@ class MyCalendar
     tasks = my_tasks(events)
     puts "My tasks: #{tasks[0]}h(#{(tasks[0] / 8).round(2)}day)"
     tasks[1].each do |task|
-      if task[1].kind_of?(String)
+      if task[1].is_a?(String)
         puts "  ・#{task[0]}: #{task[1]}"
       else
         puts "  ・#{task[0]}: #{task[1]}h"
@@ -37,7 +39,7 @@ class MyCalendar
   end
 
   def hide_words
-    ["__"]
+    ['__']
   end
 
   def all_day_event?(date)
@@ -65,7 +67,7 @@ class MyCalendar
           end
           total_meeting_times = 0
           tasks_hash.each do |h|
-            total_meeting_times += h.to_ary[1] unless h.to_ary[1].kind_of?(String)
+            total_meeting_times += h.to_ary[1] unless h.to_ary[1].is_a?(String)
           end
         end
       end
@@ -79,27 +81,21 @@ class MyCalendar
     tasks_hash = {}
 
     events.items.each do |e|
-      unless e.organizer.email.include?(my_email_address)
-        e.attendees.each do |a|
-          # response_status:
-          #   accepted: 承諾
-          #   tentative: 仮承諾
-          #   declined: 欠席
-          if a.email == my_email_address && a.response_status == 'accepted' # 自分が承諾したタスク
-            unless e.summary.start_with?(*hide_words)
-              task_time = (e.end.date_time - e.start.date_time).to_f * 24
-              if tasks_hash[e.summary]
-                tasks_hash[e.summary] += task_time
-              else
-                tasks_hash[e.summary] = task_time
-              end
+      next if e.organizer.email.include?(my_email_address)
 
-              total_meeting_times = 0
-              tasks_hash.each do |h|
-                total_meeting_times += h.to_ary[1]
-              end
-            end
-          end
+      # 単一のカレンダー内から自分が出席返答したイベントを探して計算
+      e.attendees.each do |a|
+        next unless a.email == my_email_address && a.response_status == 'accepted'
+
+        task_time = (e.end.date_time - e.start.date_time).to_f * 24
+        if tasks_hash[e.summary]
+          tasks_hash[e.summary] += task_time
+        else
+          tasks_hash[e.summary] = task_time
+        end
+        total_meeting_times = 0
+        tasks_hash.each do |h|
+          total_meeting_times += h.to_ary[1]
         end
       end
     end
@@ -109,13 +105,12 @@ class MyCalendar
   def calendar_events
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = Vgcal::Authorizer.new.credentials
-    calendar_id = "primary"
+    calendar_id = 'primary'
     service.list_events(calendar_id,
                         max_results: 100,
                         single_events: true,
-                        order_by: "startTime",
+                        order_by: 'startTime',
                         time_min: @start_date,
                         time_max: @end_date)
-
   end
 end
