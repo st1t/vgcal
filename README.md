@@ -1,3 +1,5 @@
+https://github.com/st1t/vgcal/actions/workflows/ruby.yml/badge.svg
+
 # Vgcal
 
 The vgcal command was created to simplify the display of my Google calendar schedules.
