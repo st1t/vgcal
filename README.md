@@ -1,4 +1,4 @@
-https://github.com/st1t/vgcal/actions/workflows/ruby.yml/badge.svg
+![badge](https://github.com/st1t/vgcal/actions/workflows/ruby.yml/badge.svg)
 
 # Vgcal
 
