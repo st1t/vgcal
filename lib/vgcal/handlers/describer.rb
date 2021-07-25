@@ -74,7 +74,7 @@ module Vgcal
                      (Date.today + options[:date].to_i).to_s
                    end
                  elsif options['start-date'] && options['end-date']
-                   Date.parse(options['start-date']).to_s
+                   Date.parse(options['start-date'].to_s)
                  else
                    Date.today.to_s
                  end
@@ -98,7 +98,7 @@ module Vgcal
                      (Date.today + options[:date].to_i).to_s
                    end
                  elsif options['start-date'] && options['end-date']
-                   Date.parse(options['end-date']).to_s
+                   Date.parse(options['end-date'].to_s)
                  else
                    Date.today.to_s
                  end
