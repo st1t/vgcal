@@ -28,10 +28,25 @@ module Vgcal
       desc 'show', 'Show google calendar'
 
       def show
+        Dotenv.load("#{Dir.home}/.vgcal/.env")
         puts "Period: #{start_date} - #{end_date}"
         puts
         mcal = MyCalendar.new(start_date, end_date)
-        mcal.show
+        events = mcal.events
+        tasks = mcal.tasks(events)
+        puts "My tasks: #{tasks[0]}h(#{(tasks[0] / 8).round(2)}day)"
+        tasks[1].each do |task|
+          if task[1].is_a?(String)
+            puts "  ・#{task[0]}: #{task[1]}"
+          else
+            puts "  ・#{task[0]}: #{task[1]}h"
+          end
+        end
+        meetings = mcal.invited_meetings(events)
+        puts "Invited meetings: #{meetings[0]}h(#{(meetings[0] / 8).round(2)}day)"
+        meetings[1].each do |meeting|
+          puts "  ・#{meeting[0]}: #{meeting[1]}h"
+        end
       end
 
       desc 'version', 'View vgcal version'
@@ -69,7 +84,7 @@ module Vgcal
       def end_date
         e_date = if options[:'current-week']
                    if Date.today.sunday?
-                     Date.today.to_s + 6
+                     (Date.today + 6).to_s
                    else
                      (Date.today + (6 - Date.today.wday)).to_s
                    end

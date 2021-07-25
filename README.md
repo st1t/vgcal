@@ -86,4 +86,18 @@ $ git clone git@github.com:st1t/vgcal.git
 $ cd vgcal/
 $ bundle install
 $ bundle exec ruby exe/vgcal show -d -5
+$ rake spec
+
+Vgcal
+  has a version number
+
+Vgcal::MyCalendar
+  my_task
+  my_task_hidden
+  invitation_task
+
+Finished in 0.01492 seconds (files took 0.75345 seconds to load)
+4 examples, 0 failures
+
+$ 
 ```

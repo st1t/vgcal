@@ -7,3 +7,4 @@
 /spec/reports/
 /tmp/
 token.yaml
+.rspec_status
