@@ -4,7 +4,6 @@ require 'vgcal/handlers/describer'
 require 'vgcal/my_calendar'
 require 'google/apis/core'
 require 'googleauth'
-require 'webmock'
 
 Calendar = Google::Apis::CalendarV3
 
