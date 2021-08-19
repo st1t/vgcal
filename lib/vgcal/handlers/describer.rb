@@ -21,8 +21,8 @@ module Vgcal
       end
 
       option :date, type: :string, aliases: '-d', desc: 'Show relative date. ex.-1, +10'
-      option :'current-week', type: :string, aliases: '-c', desc: 'Show current week tasks'
-      option :'next-week', type: :string, aliases: '-n', desc: 'Show next week tasks'
+      option :'current-week', type: :boolean, aliases: '-c', desc: 'Show current week tasks'
+      option :'next-week', type: :boolean, aliases: '-n', desc: 'Show next week tasks'
       option :'start-date', type: :numeric, aliases: '-s', desc: 'Start date. ex.20210701'
       option :'end-date', type: :numeric, aliases: '-e', desc: 'End date. ex.20210728'
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vgcal (0.2.0)
+    vgcal (0.2.1)
       dotenv
       google-api-client
       thor (~> 1.1)
