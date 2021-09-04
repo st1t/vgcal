@@ -113,7 +113,11 @@ module Vgcal
                  elsif options['start-date'] && options['end-date']
                    Date.parse(options['end-date'].to_s)
                  else
-                   Date.today.to_s
+                   if Date.today.sunday?
+                     (Date.today + 6).to_s
+                   else
+                     (Date.today + (6 - Date.today.wday)).to_s
+                   end
                  end
         "#{e_date}T23:59:59+09:00"
       end
