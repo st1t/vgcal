@@ -8,24 +8,23 @@ module Vgcal
   class MyCalendar
     def initialize(start_date, end_date)
       @start_date = start_date
-      @end_date = end_date
+      @end_date   = end_date
     end
 
     def events
-      service = Google::Apis::CalendarV3::CalendarService.new
+      service               = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = Vgcal::Authorizer.new.credentials
-      calendar_id = 'primary'
+      calendar_id           = 'primary'
       service.list_events(calendar_id,
-                          max_results: 100,
+                          max_results:   100,
                           single_events: true,
-                          order_by: 'startTime',
-                          time_min: @start_date,
-                          time_max: @end_date)
+                          order_by:      'startTime',
+                          time_min:      @start_date,
+                          time_max:      @end_date)
     end
 
-    # return: [4.25, [["daily scrum", 0.25], ["SRE定例", 1.0], ["test", 2.0], ["task2", 1.0]]]
+    # return: [["daily scrum", 0.25], ["SRE定例", 1.0], ["test", 2.0], ["task2", 1.0]]
     def tasks(events)
-      total_meeting_times = 0
       tasks_hash = {}
       events.items.each do |e|
         if e.organizer.email.include?(my_email_address) && !e.summary.start_with?(*hide_words)
@@ -39,19 +38,14 @@ module Vgcal
             else
               tasks_hash[e.summary] = task_time
             end
-            total_meeting_times = 0
-            tasks_hash.each do |h|
-              total_meeting_times += h.to_ary[1] unless h.to_ary[1].is_a?(String)
-            end
           end
         end
       end
-      [total_meeting_times, tasks_hash.sort.to_a]
+      tasks_hash.sort.to_a
     end
 
-    # return: [2.25, [["朝会", 0.5], ["daily scrum", 0.25], ["SRE朝会", 0.5], ["定例", 1.0]]]
+    # return: [["朝会", 0.5], ["daily scrum", 0.25], ["SRE朝会", 0.5], ["定例", 1.0]]
     def invited_meetings(events)
-      total_meeting_times = 0
       tasks_hash = {}
       events.items.each do |e|
         next if e.organizer.email.include?(my_email_address) || e.summary.start_with?(*hide_words)
@@ -67,13 +61,9 @@ module Vgcal
           else
             tasks_hash[e.summary] = task_time
           end
-          total_meeting_times = 0
-          tasks_hash.each do |h|
-            total_meeting_times += h.to_ary[1]
-          end
         end
       end
-      [total_meeting_times, tasks_hash.sort.to_a]
+      tasks_hash.sort.to_a
     end
 
     private

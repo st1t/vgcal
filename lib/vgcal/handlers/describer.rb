@@ -3,6 +3,7 @@
 require 'thor'
 require 'vgcal/my_calendar'
 require 'fileutils'
+require 'json'
 
 module Vgcal
   module Handlers
@@ -13,7 +14,7 @@ module Vgcal
       def init
         vgcal_dir = "#{Dir.home}/.vgcal"
         cred_json = "#{vgcal_dir}/credentials.json"
-        dot_env = "#{vgcal_dir}/.env"
+        dot_env   = "#{vgcal_dir}/.env"
         Dir.mkdir(vgcal_dir, 0o755) unless Dir.exist?(vgcal_dir)
         FileUtils.cp('template-credentials.json', cred_json) unless File.exist?(cred_json)
         FileUtils.cp('template.env', dot_env) unless File.exist?(dot_env)
@@ -25,28 +26,22 @@ module Vgcal
       option :'next-week', type: :boolean, aliases: '-n', desc: 'Show next week tasks'
       option :'start-date', type: :numeric, aliases: '-s', desc: 'Start date. ex.20210701'
       option :'end-date', type: :numeric, aliases: '-e', desc: 'End date. ex.20210728'
+      option :'output', type: :string, aliases: '-o', desc: 'Output format. [text|json]'
 
       desc 'show', 'Show google calendar'
 
       def show
         Dotenv.load("#{Dir.home}/.vgcal/.env")
-        puts "Period: #{start_date} - #{end_date}"
-        puts
-        mcal = MyCalendar.new(start_date, end_date)
+        mcal   = MyCalendar.new(start_date, end_date)
         events = mcal.events
-        tasks = mcal.tasks(events)
-        puts "My tasks: #{tasks[0]}h(#{(tasks[0] / 8).round(2)}day)"
-        tasks[1].each do |task|
-          if task[1].is_a?(String)
-            puts "  ・#{task[0]}: #{task[1]}"
-          else
-            puts "  ・#{task[0]}: #{task[1]}h"
-          end
-        end
-        meetings = mcal.invited_meetings(events)
-        puts "Invited meetings: #{meetings[0]}h(#{(meetings[0] / 8).round(2)}day)"
-        meetings[1].each do |meeting|
-          puts "  ・#{meeting[0]}: #{meeting[1]}h"
+
+        case options[:output]
+        when 'json'
+          stdout_json(mcal.tasks(events), mcal.invited_meetings(events))
+        when 'text'
+          stdout_default(mcal.tasks(events), mcal.invited_meetings(events))
+        else
+          stdout_default(mcal.tasks(events), mcal.invited_meetings(events))
         end
       end
 
@@ -57,6 +52,55 @@ module Vgcal
       end
 
       private
+
+      def stdout_json(my_tasks, invited_meetings)
+        hash = {
+          'start_date': "#{start_date}",
+          'end_date':   "#{end_date}",
+          'tasks':      []
+        }
+        my_tasks.each do |task|
+          hash[:tasks].push ({
+            "title":     task[0],
+            "time":      task[1],
+            "task_type": 'my_task'
+          })
+        end
+        invited_meetings.each do |meeting|
+          hash[:tasks].push ({
+            'title':     meeting[0],
+            'time':      meeting[1],
+            'task_type': 'invited_meeting'
+          })
+        end
+        puts hash.to_json
+      end
+
+      def stdout_default(my_tasks, invited_meetings)
+        puts "Period: #{start_date} - #{end_date}"
+        puts
+        my_task_time = 0
+        my_tasks.select do |n|
+          my_task_time += n[1]
+        end
+        puts "My tasks: #{my_task_time}h(#{(my_task_time / 8).round(2)}day)"
+        my_tasks.each do |task|
+          if my_tasks.is_a?(String)
+            puts "  ・#{task[0]}: #{task[1]}"
+          else
+            puts "  ・#{task[0]}: #{task[1]}h"
+          end
+        end
+
+        meeting_time = 0
+        invited_meetings.select do |m|
+          meeting_time += m[1]
+        end
+        puts "Invited meetings: #{meeting_time}h(#{(meeting_time / 8).round(2)}day)"
+        invited_meetings.each do |meeting|
+          puts "  ・#{meeting[0]}: #{meeting[1]}h"
+        end
+      end
 
       def start_date
         s_date = if options[:'current-week']

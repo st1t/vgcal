@@ -56,7 +56,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event_3.end.date_time = DateTime.parse('2021-07-25T16:15:00+09:00')
     events.items.push(accepted_event_3)
 
-    expect(mcal.tasks(events)).to eq([1.5, [["test_task1", 1.0], ["test_task2", 0.5]]])
+    expect(mcal.tasks(events)).to eq([["test_task1", 1.0], ["test_task2", 0.5]])
   end
 
   it 'my_task_hidden' do
@@ -101,7 +101,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event_3.end.date_time = DateTime.parse('2021-07-25T16:15:00+09:00')
     events.items.push(accepted_event_3)
 
-    expect(mcal.tasks(events)).to eq([0.5, [["test_task2", 0.5]]])
+    expect(mcal.tasks(events)).to eq([["test_task2", 0.5]])
   end
 
   it 'invitation_task' do
@@ -176,6 +176,6 @@ RSpec.describe Vgcal::MyCalendar do
     declined_event_1.attendees.push(attend2)
     events.items.push(declined_event_1)
 
-    expect(mcal.invited_meetings(events)).to eq([2.0, [["accepted_invitation_task1", 1.0], ["accepted_invitation_task2", 1.0]]])
+    expect(mcal.invited_meetings(events)).to eq([["accepted_invitation_task1", 1.0], ["accepted_invitation_task2", 1.0]])
   end
 end
