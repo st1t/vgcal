@@ -29,7 +29,7 @@ module Vgcal
       events.items.each do |e|
         if e.organizer.email.include?(my_email_address) && !e.summary.start_with?(*hide_words)
           if all_day_event?(e.start.date)
-            tasks_hash[e.summary] = 'all day'
+            tasks_hash[e.summary] = 0
           else
             task_time = (e.end.date_time - e.start.date_time).to_f * 24
             # 1日の中で同じタスク名が複数あったら時間を集計する。例.午前と午後それぞれでAプロジェクトに1時間スケジュール

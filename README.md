@@ -62,8 +62,8 @@ $ vgcal show
 Period: 2021-07-24T00:00:00+09:00 - 2021-07-24T23:59:59+09:00
 
 My tasks: 5.25h(0.66day)
-  ・all day task 1: all day
-  ・all day task2: all day
+  ・all day task 1: 0h
+  ・all day task2: 0h
   ・meeting1: 2.0h
   ・meeting2: 0.25h
   ・meeting3: 3.0h
@@ -81,6 +81,30 @@ $ vgcal show -d +1
 
 # Schedule for 2021/07/01 - 2021/07/28
 $ vgcal show -s 20210701 -e 20210728
+
+# Formatted json
+$ vgcal show -o json | jq .
+{
+  "start_date": "2021-09-05T00:00:00+09:00",
+  "end_date": "2021-09-05T23:59:59+09:00",
+  "tasks": [
+    {
+      "title": "all day task 1",
+      "time": 0,
+      "task_type": "my_task"
+    },
+    {
+      "title": "task a",
+      "time": 1,
+      "task_type": "my_task"
+    },
+    {
+      "title": "task b",
+      "time": 1,
+      "task_type": "my_task"
+    }
+  ]
+}
 ```
 
 ## Development
