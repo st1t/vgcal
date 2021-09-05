@@ -141,7 +141,7 @@ module Vgcal
                    end
                  elsif options[:'next-week']
                    if Date.today.sunday?
-                     (Date.today + 7).to_s
+                     (Date.today + 13).to_s
                    else
                      (Date.today + 7 + (6 - Date.today.wday)).to_s
                    end
@@ -157,11 +157,7 @@ module Vgcal
                  elsif options['start-date'] && options['end-date']
                    Date.parse(options['end-date'].to_s)
                  else
-                   if Date.today.sunday?
-                     (Date.today + 6).to_s
-                   else
-                     (Date.today + (6 - Date.today.wday)).to_s
-                   end
+                   Date.today.to_s
                  end
         "#{e_date}T23:59:59+09:00"
       end
