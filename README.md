@@ -46,6 +46,7 @@ Options:
   -n, [--next-week], [--no-next-week]        # Show next week tasks
   -s, [--start-date=N]                       # Start date. ex.20210701
   -e, [--end-date=N]                         # End date. ex.20210728
+  -o, [--output=OUTPUT]                      # Output format. [text|json]
 
 Show google calendar
 $
