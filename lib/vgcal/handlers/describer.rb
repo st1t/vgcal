@@ -15,9 +15,10 @@ module Vgcal
         vgcal_dir = "#{Dir.home}/.vgcal"
         cred_json = "#{vgcal_dir}/credentials.json"
         dot_env   = "#{vgcal_dir}/.env"
+        gem_root  = File.expand_path '../../../', __dir__
         Dir.mkdir(vgcal_dir, 0o755) unless Dir.exist?(vgcal_dir)
-        FileUtils.cp('template-credentials.json', cred_json) unless File.exist?(cred_json)
-        FileUtils.cp('template.env', dot_env) unless File.exist?(dot_env)
+        FileUtils.cp(File.join(gem_root,'template-credentials.json'), cred_json) unless File.exist?(cred_json)
+        FileUtils.cp(File.join(gem_root,'template.env'), dot_env) unless File.exist?(dot_env)
         puts "Fix the __FIX_ME__ in #{cred_json} and #{dot_env}"
       end
 
