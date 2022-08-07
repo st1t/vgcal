@@ -69,7 +69,7 @@ module Vgcal
     private
 
     def my_email_address
-      ENV['MY_EMAIL_ADDRESS']
+      ENV.fetch['MY_EMAIL_ADDRESS']
     end
 
     def hide_words

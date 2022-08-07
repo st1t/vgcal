@@ -16,7 +16,7 @@ module Vgcal
         cred_json = "#{vgcal_dir}/credentials.json"
         dot_env   = "#{vgcal_dir}/.env"
         gem_root  = File.expand_path '../../../', __dir__
-        Dir.mkdir(vgcal_dir, 0o755) unless Dir.exist?(vgcal_dir)
+        FileUtils.mkdir_p(vgcal_dir, 0o755)
         FileUtils.cp(File.join(gem_root,'template-credentials.json'), cred_json) unless File.exist?(cred_json)
         FileUtils.cp(File.join(gem_root,'template.env'), dot_env) unless File.exist?(dot_env)
         puts "Fix the __FIX_ME__ in #{cred_json} and #{dot_env}"
@@ -27,7 +27,7 @@ module Vgcal
       option :'next-week', type: :boolean, aliases: '-n', desc: 'Show next week tasks'
       option :'start-date', type: :numeric, aliases: '-s', desc: 'Start date. ex.20210701'
       option :'end-date', type: :numeric, aliases: '-e', desc: 'End date. ex.20210728'
-      option :'output', type: :string, aliases: '-o', desc: 'Output format. [text|json]'
+      option :output, type: :string, aliases: '-o', desc: 'Output format. [text|json]'
 
       desc 'show', 'Show google calendar'
 
@@ -39,9 +39,7 @@ module Vgcal
         case options[:output]
         when 'json'
           stdout_json(mcal.tasks(events), mcal.invited_meetings(events))
-        when 'text'
-          stdout_default(mcal.tasks(events), mcal.invited_meetings(events))
-        else
+        when 'text', 'output', nil
           stdout_default(mcal.tasks(events), mcal.invited_meetings(events))
         end
       end
@@ -56,22 +54,22 @@ module Vgcal
 
       def stdout_json(my_tasks, invited_meetings)
         hash = {
-          'start_date': "#{start_date}",
-          'end_date':   "#{end_date}",
-          'tasks':      []
+          start_date: "#{start_date}",
+          end_date:   "#{end_date}",
+          tasks:      []
         }
         my_tasks.each do |task|
           hash[:tasks].push ({
-            "title":     task[0],
-            "time":      task[1],
-            "task_type": 'my_task'
+            title:     task[0],
+            time:      task[1],
+            task_type: 'my_task'
           })
         end
         invited_meetings.each do |meeting|
           hash[:tasks].push ({
-            'title':     meeting[0],
-            'time':      meeting[1],
-            'task_type': 'invited_meeting'
+            title:     meeting[0],
+            time:      meeting[1],
+            task_type: 'invited_meeting'
           })
         end
         puts hash.to_json

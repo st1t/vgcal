@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/st1t/vgcal"
   spec.license     = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 3.0.1")
+  spec.metadata['rubygems_mfa_required'] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{\A(?:test|spec|features)/}) }
@@ -27,6 +28,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.10"
   spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-performance"
+  spec.add_development_dependency "rubocop-rspec"
   spec.add_runtime_dependency "thor", "~> 1.1"
   spec.add_runtime_dependency "google-api-client"
   spec.add_runtime_dependency "dotenv"

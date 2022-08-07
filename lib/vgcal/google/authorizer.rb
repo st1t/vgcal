@@ -23,8 +23,7 @@ module Vgcal
       credentials = authorizer.get_credentials user_id
       if credentials.nil?
         url = authorizer.get_authorization_url base_url: @oob_uri
-        puts 'Open the following URL in the browser and enter the ' \
-         "resulting code after authorization:\n" + url
+        puts "Open the following URL in the browser and enter the resulting code after authorization:\n#{url}"
         code = $stdin.gets
         credentials = authorizer.get_and_store_credentials_from_code(
           user_id: user_id, code: code, base_url: @oob_uri
