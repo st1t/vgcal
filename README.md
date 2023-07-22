@@ -12,17 +12,33 @@ $ gem install vgcal
 
 ## First run
 
-- Setup Google API
-  - [Create a project and enable the API](https://developers.google.com/workspace/guides/create-project)
-  - [Create credentials](https://developers.google.com/workspace/guides/create-credentials)
-    - [When creating an OAuth client ID, the application type will be a desktop application](https://developers.google.com/workspace/guides/create-credentials#desktop)
-  - [Enable Google Calendar API](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com)
+### Setup Google API
+
+1. [Create Google Cloud project](https://developers.google.com/workspace/guides/create-project)
+2. [Enable Google Calendar API](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com)
+3. [Create service account](https://developers.google.com/workspace/guides/create-credentials)
+   1. [Create a service account](https://developers.google.com/workspace/guides/create-credentials#create_a_service_account)
+   2. [Create credentials for a service account](https://developers.google.com/workspace/guides/create-credentials#create_credentials_for_a_service_account)
+   3. Please save the following information
+      1. Email address of the issued service account
+      2. credential.json issued to the service account
+4. [Set up sharing settings for the Google calendar you want to display in vgcal](https://support.google.com/calendar/answer/37082)
+   1. Share a calendar with specific people
+      1. Add the email address issued in the service account.
+         1. ![share-calendar.png](images%2Fshare-calendar.png)
+
+### Setup vgcal
 
 ```shell
-$ gem install vgcal
 $ vgcal init
-Fix the __FIX_ME__ in /Users/ito.shota/.vgcal/credentials.json
-$
+Fix the __FIX_ME__ in /Users/shota-ito/.vgcal/credentials.json and /Users/shota-ito/.vgcal/.env
+
+# Save the key issued by the service account as credentials.json
+$ cp ~/Downloads/__SERVICE_ACCOUNT_KEY__.json ~/.vgcal/credentials.json
+
+# Please write the email address of the calendar you would like to display in vgcal.
+# This is not the email address of the service account.
+$ vim ~/.vgcal/.env
 ```
 
 ## Usage
