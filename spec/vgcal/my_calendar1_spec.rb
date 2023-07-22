@@ -11,8 +11,8 @@ RSpec.describe Vgcal::MyCalendar do
   it 'my_task' do
     start_date = '2021-07-25T00:00:00+09:00'
     end_date = '2021-07-25T23:59:59+09:00'
-    mcal = described_class.new(start_date, end_date)
-    allow(mcal).to receive(:my_email_address).and_return('self@example.jp')
+    my_calendar = described_class.new(start_date, end_date)
+    allow(my_calendar).to receive(:my_email_address).and_return('self@example.jp')
 
     events = Google::Apis::CalendarV3::Events.new
     events.items = []
@@ -22,6 +22,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event1.status = 'accepted'
     accepted_event1.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event1.organizer.email = 'self@example.jp'
+    accepted_event1.organizer.self = true
     accepted_event1.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event1.start.date_time = DateTime.parse('2021-07-25T11:00:00+09:00')
     accepted_event1.end = Google::Apis::CalendarV3::EventDateTime.new
@@ -33,6 +34,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event2.status = 'accepted'
     accepted_event2.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event2.organizer.email = 'self@example.jp'
+    accepted_event2.organizer.self = true
     accepted_event2.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event2.start.date_time = DateTime.parse('2021-07-25T13:00:00+09:00')
     accepted_event2.end = Google::Apis::CalendarV3::EventDateTime.new
@@ -44,20 +46,21 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event3.status = 'accepted'
     accepted_event3.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event3.organizer.email = 'self@example.jp'
+    accepted_event3.organizer.self = true
     accepted_event3.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event3.start.date_time = DateTime.parse('2021-07-25T16:00:00+09:00')
     accepted_event3.end = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event3.end.date_time = DateTime.parse('2021-07-25T16:15:00+09:00')
     events.items.push(accepted_event3)
 
-    expect(mcal.tasks(events)).to eq([['test_task1', 1.0], ['test_task2', 0.5]])
+    expect(my_calendar.tasks(events)).to eq([['test_task1', 1.0], ['test_task2', 0.5]])
   end
 
   it 'my_task_hidden' do
     start_date = '2021-07-25T00:00:00+09:00'
     end_date = '2021-07-25T23:59:59+09:00'
-    mcal = described_class.new(start_date, end_date)
-    allow(mcal).to receive(:my_email_address).and_return('self@example.jp')
+    my_calendar = described_class.new(start_date, end_date)
+    allow(my_calendar).to receive(:my_email_address).and_return('self@example.jp')
 
     events = Google::Apis::CalendarV3::Events.new
     events.items = []
@@ -67,6 +70,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event1.status = 'accepted'
     accepted_event1.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event1.organizer.email = 'self@example.jp'
+    accepted_event1.organizer.self = true
     accepted_event1.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event1.start.date_time = DateTime.parse('2021-07-25T11:00:00+09:00')
     accepted_event1.end = Google::Apis::CalendarV3::EventDateTime.new
@@ -78,6 +82,7 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event2.status = 'accepted'
     accepted_event2.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event2.organizer.email = 'self@example.jp'
+    accepted_event2.organizer.self = true
     accepted_event2.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event2.start.date_time = DateTime.parse('2021-07-25T13:00:00+09:00')
     accepted_event2.end = Google::Apis::CalendarV3::EventDateTime.new
@@ -89,20 +94,21 @@ RSpec.describe Vgcal::MyCalendar do
     accepted_event3.status = 'accepted'
     accepted_event3.organizer = Google::Apis::CalendarV3::Event::Organizer.new
     accepted_event3.organizer.email = 'self@example.jp'
+    accepted_event3.organizer.self = true
     accepted_event3.start = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event3.start.date_time = DateTime.parse('2021-07-25T16:00:00+09:00')
     accepted_event3.end = Google::Apis::CalendarV3::EventDateTime.new
     accepted_event3.end.date_time = DateTime.parse('2021-07-25T16:15:00+09:00')
     events.items.push(accepted_event3)
 
-    expect(mcal.tasks(events)).to eq([['test_task2', 0.5]])
+    expect(my_calendar.tasks(events)).to eq([['test_task2', 0.5]])
   end
 
   it 'invitation_task' do
     start_date = '2021-07-25T00:00:00+09:00'
     end_date = '2021-07-25T23:59:59+09:00'
-    mcal = described_class.new(start_date, end_date)
-    allow(mcal).to receive(:my_email_address).and_return('self@example.jp')
+    my_calendar = described_class.new(start_date, end_date)
+    allow(my_calendar).to receive(:my_email_address).and_return('self@example.jp')
 
     events = Google::Apis::CalendarV3::Events.new
     events.items = []
@@ -170,6 +176,11 @@ RSpec.describe Vgcal::MyCalendar do
     declined_event1.attendees.push(attend2)
     events.items.push(declined_event1)
 
-    expect(mcal.invited_meetings(events)).to eq([['accepted_invitation_task1', 1.0], ['accepted_invitation_task2', 1.0]])
+    expect(my_calendar.invited_meetings(events)).to eq(
+      [
+        ['accepted_invitation_task1', 1.0],
+        ['accepted_invitation_task2', 1.0]
+      ]
+    )
   end
 end

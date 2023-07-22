@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'vgcal/my_calendar'
+require 'vgcal/date_calculator'
 require 'fileutils'
 require 'json'
 
@@ -14,11 +15,11 @@ module Vgcal
       def init
         vgcal_dir = "#{Dir.home}/.vgcal"
         cred_json = "#{vgcal_dir}/credentials.json"
-        dot_env   = "#{vgcal_dir}/.env"
-        gem_root  = File.expand_path '../../../', __dir__
+        dot_env = "#{vgcal_dir}/.env"
+        gem_root = File.expand_path('../../../', __dir__ || '.')
         FileUtils.mkdir_p(vgcal_dir, mode: 0o755)
-        FileUtils.cp(File.join(gem_root,'template-credentials.json'), cred_json) unless File.exist?(cred_json)
-        FileUtils.cp(File.join(gem_root,'template.env'), dot_env) unless File.exist?(dot_env)
+        FileUtils.cp(File.join(gem_root, 'template-credentials.json'), cred_json) unless File.exist?(cred_json)
+        FileUtils.cp(File.join(gem_root, 'template.env'), dot_env) unless File.exist?(dot_env)
         puts "Fix the __FIX_ME__ in #{cred_json} and #{dot_env}"
       end
 
@@ -33,14 +34,14 @@ module Vgcal
 
       def show
         Dotenv.load("#{Dir.home}/.vgcal/.env")
-        mcal   = MyCalendar.new(start_date, end_date)
-        events = mcal.events
+        my_calendar = MyCalendar.new(DateCalculator.start_date(options), DateCalculator.end_date(options))
+        events = my_calendar.events
 
         case options[:output]
         when 'json'
-          stdout_json(mcal.tasks(events), mcal.invited_meetings(events))
-        when 'text', 'output', nil
-          stdout_default(mcal.tasks(events), mcal.invited_meetings(events))
+          stdout_json(my_calendar.tasks(events), my_calendar.invited_meetings(events))
+        else
+          stdout_default(my_calendar.tasks(events), my_calendar.invited_meetings(events))
         end
       end
 
@@ -54,29 +55,33 @@ module Vgcal
 
       def stdout_json(my_tasks, invited_meetings)
         hash = {
-          start_date: "#{start_date}",
-          end_date:   "#{end_date}",
-          tasks:      []
+          start_date: "#{DateCalculator.start_date(options)}",
+          end_date: "#{DateCalculator.end_date(options)}",
+          tasks: []
         }
         my_tasks.each do |task|
-          hash[:tasks].push ({
-            title:     task[0],
-            time:      task[1],
-            task_type: 'my_task'
-          })
+          hash[:tasks].push(
+            {
+              title: task[0],
+              time: task[1],
+              task_type: 'my_task'
+            }
+          )
         end
         invited_meetings.each do |meeting|
-          hash[:tasks].push ({
-            title:     meeting[0],
-            time:      meeting[1],
-            task_type: 'invited_meeting'
-          })
+          hash[:tasks].push(
+            {
+              title: meeting[0],
+              time: meeting[1],
+              task_type: 'invited_meeting'
+            }
+          )
         end
         puts hash.to_json
       end
 
       def stdout_default(my_tasks, invited_meetings)
-        puts "Period: #{start_date} - #{end_date}"
+        puts "Period: #{DateCalculator.start_date(options)} - #{DateCalculator.end_date(options)}"
         puts
         my_task_time = 0
         my_tasks.select do |n|
@@ -99,66 +104,6 @@ module Vgcal
         invited_meetings.each do |meeting|
           puts "  ・#{meeting[0]}: #{meeting[1]}h"
         end
-      end
-
-      def start_date
-        s_date = if options[:'current-week']
-                   if Date.today.sunday?
-                     Date.today.to_s
-                   else
-                     (Date.today - Date.today.wday).to_s
-                   end
-                 elsif options[:'next-week']
-                   if Date.today.sunday?
-                     (Date.today + 7).to_s
-                   else
-                     (Date.today + Date.today.wday - 1).to_s
-                   end
-                 elsif options[:date]
-                   case options[:date][0]
-                   when '+'
-                     (Date.today + options[:date].delete('+').to_i).to_s
-                   when '-'
-                     (Date.today - options[:date].delete('-').to_i).to_s
-                   else
-                     (Date.today + options[:date].to_i).to_s
-                   end
-                 elsif options['start-date'] && options['end-date']
-                   Date.parse(options['start-date'].to_s)
-                 else
-                   Date.today.to_s
-                 end
-        "#{s_date}T00:00:00+09:00"
-      end
-
-      def end_date
-        e_date = if options[:'current-week']
-                   if Date.today.sunday?
-                     (Date.today + 6).to_s
-                   else
-                     (Date.today + (6 - Date.today.wday)).to_s
-                   end
-                 elsif options[:'next-week']
-                   if Date.today.sunday?
-                     (Date.today + 13).to_s
-                   else
-                     (Date.today + 7 + (6 - Date.today.wday)).to_s
-                   end
-                 elsif options[:date]
-                   case options[:date][0]
-                   when '+'
-                     (Date.today + options[:date].delete('+').to_i).to_s
-                   when '-'
-                     (Date.today - options[:date].delete('-').to_i).to_s
-                   else
-                     (Date.today + options[:date].to_i).to_s
-                   end
-                 elsif options['start-date'] && options['end-date']
-                   Date.parse(options['end-date'].to_s)
-                 else
-                   Date.today.to_s
-                 end
-        "#{e_date}T23:59:59+09:00"
       end
     end
   end

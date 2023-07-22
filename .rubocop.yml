@@ -8,3 +8,6 @@ AllCops:
 RSpec/ExampleLength:
   Exclude:
     - 'spec/**/*'
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false

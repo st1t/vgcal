@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = "%q{The vgcal command simplifies the display of Google Calendar events.}"
   spec.homepage      = "https://github.com/st1t/vgcal"
   spec.license     = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 3.0.1")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.2")
   spec.metadata['rubygems_mfa_required'] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
@@ -30,7 +30,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop"
   spec.add_development_dependency "rubocop-performance"
   spec.add_development_dependency "rubocop-rspec"
+
   spec.add_runtime_dependency "thor", "~> 1.1"
-  spec.add_runtime_dependency "google-api-client"
+  spec.add_runtime_dependency "google-apis-calendar_v3"
+  spec.add_runtime_dependency "googleauth"
   spec.add_runtime_dependency "dotenv"
 end
