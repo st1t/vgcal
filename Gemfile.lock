@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vgcal (0.4.4)
+    vgcal (0.5.0)
       dotenv
       google-apis-calendar_v3
       googleauth

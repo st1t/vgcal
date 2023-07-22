@@ -176,6 +176,11 @@ RSpec.describe Vgcal::MyCalendar do
     declined_event1.attendees.push(attend2)
     events.items.push(declined_event1)
 
-    expect(my_calendar.invited_meetings(events)).to eq([['accepted_invitation_task1', 1.0], ['accepted_invitation_task2', 1.0]])
+    expect(my_calendar.invited_meetings(events)).to eq(
+      [
+        ['accepted_invitation_task1', 1.0],
+        ['accepted_invitation_task2', 1.0]
+      ]
+    )
   end
 end

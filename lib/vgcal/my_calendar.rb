@@ -50,24 +50,39 @@ module Vgcal
     def invited_meetings(events)
       tasks_hash = {}
       events.items.each do |e|
-        next if e.organizer&.self || e.summary&.start_with?(*hide_words)
+        next if valid_event?(e)
 
         # 単一のカレンダー内から自分が出席返答したイベントを探して計算
         e.attendees&.each do |a|
-          next if a.email != my_email_address || (a.email == my_email_address && a.response_status != 'accepted')
+          next if valid_attendee?(a)
 
-          task_time = (e.end.date_time - e.start.date_time).to_f * 24
-          if tasks_hash[e.summary]
-            tasks_hash[e.summary] += task_time
-          else
-            tasks_hash[e.summary] = task_time
-          end
+          add_task_time(tasks_hash, e)
         end
       end
       tasks_hash.sort.to_a
     end
 
     private
+
+    def add_task_time(tasks_hash, event)
+      task_time = (event.end.date_time - event.start.date_time).to_f * 24
+      if tasks_hash[event.summary]
+        tasks_hash[event.summary] += task_time
+      else
+        tasks_hash[event.summary] = task_time
+      end
+    end
+
+    def valid_event?(event)
+      event.organizer&.self || event.summary&.start_with?(*hide_words)
+    end
+
+    def valid_attendee?(attendee)
+      return true if attendee.email != my_email_address
+      return true if attendee.email == my_email_address && attendee.response_status != 'accepted'
+
+      false
+    end
 
     def my_email_address
       ENV.fetch('MY_EMAIL_ADDRESS')
